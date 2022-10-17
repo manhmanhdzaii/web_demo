@@ -2,13 +2,16 @@
 $css = array('list_products');
 $js = array('list_products');
 include('include/header.php');
-
+include_once('../Controller/HomeController.php');
+$product = new HomeController();
+$products = $product->getAllProduct();
+$categories = $product->getAllCate();
 
 ?>
 <div class="main">
     <div class="main_title">
         <div class="main_link_title">
-            <a href="#">Home</a>/<a href="#">Shop</a>/<a href="#">For Men</a>
+            <a href="#">Home</a>/<a href="#">Shop</a>
         </div>
     </div>
     <div class="main_container">
@@ -22,21 +25,20 @@ include('include/header.php');
                         PRODUCTS CATEGORY
                     </div>
                     <div class="c2_find_content">
-                        <div class="c2_find_b1_item c2_find_b1_item_check">
-                            Clothing
+                        <div class="hidden c2_find_b1_item c2_find_b1_item_check c2_find_b1_item_hidden" value="0">
                         </div>
-                        <div class="c2_find_b1_item">
-                            Accessories
+                        <?php if (mysqli_num_rows($categories) > 0) {
+                            while ($category = mysqli_fetch_array($categories)) {
+                        ?>
+                        <div class="c2_find_b1_item search" value="<?= $category['id'] ?>">
+                            <?= $category['name'] ?>
                         </div>
-                        <div class="c2_find_b1_item">
-                            Shoes
-                        </div>
-                        <div class="c2_find_b1_item">
-                            Hat
-                        </div>
+                        <?php
+                            }
+                        } ?>
                     </div>
                 </div>
-                <div class="b2_find_b2">
+                <div class=" b2_find_b2">
                     <div class="c2_find_title">
                         FILTER BY PRICE
                     </div>
@@ -57,7 +59,7 @@ include('include/header.php');
                             <div class="pricer_input">
                                 <p>$</p><input type="number" class="ip_max" value="900">
                             </div>
-                            <div class="filter_price">
+                            <div class="filter_price search" value="0">
                                 Filter
                             </div>
                         </div>
@@ -69,19 +71,20 @@ include('include/header.php');
                     </div>
                     <div class="c2_find_content">
                         <div class="b3_box_color">
-                            <button class="b3_item_color item_color_white">
+                            <div class="hidden b3_item_color_check b3_item_color_hidden b3_item_color" value="0"></div>
+                            <button class="b3_item_color item_color_white search" value="1">
 
                             </button>
-                            <button class="b3_item_color item_color_black">
+                            <button class="b3_item_color item_color_black search" value="2">
 
                             </button>
-                            <button class="b3_item_color item_color_red">
+                            <button class="b3_item_color item_color_red search" value="3">
 
                             </button>
-                            <button class="b3_item_color item_color_yellow">
+                            <button class="b3_item_color item_color_yellow search" value="4">
 
                             </button>
-                            <button class="b3_item_color item_color_blue">
+                            <button class="b3_item_color item_color_blue search" value="5">
 
                             </button>
                         </div>
@@ -93,19 +96,20 @@ include('include/header.php');
                     </div>
                     <div class="c2_find_content">
                         <div class="b4_box_size">
-                            <button class="b3_item_size">
+                            <div class="hidden b3_item_size_check b3_item_size_hidden b3_item_size" value="0"></div>
+                            <button class="b3_item_size search" value="1">
                                 S
                             </button>
-                            <button class="b3_item_size">
+                            <button class="b3_item_size search" value="2">
                                 M
                             </button>
-                            <button class="b3_item_size">
+                            <button class="b3_item_size search" value="3">
                                 l
                             </button>
-                            <button class="b3_item_size b3_item_size_check">
+                            <button class="b3_item_size search" value="4">
                                 xl
                             </button>
-                            <button class="b3_item_size">
+                            <button class="b3_item_size search" value="5">
                                 xxl
                             </button>
                         </div>
@@ -118,112 +122,34 @@ include('include/header.php');
                         <p class="list_sort_check_tittle">Defaut Sorting</p>
                         <img src="../public/images/arrow_sort.png">
                         <div class="list_sort_all hidden">
-                            <div class="list_sort_post">Defaut Sorting</div>
-                            <div class="list_sort_post">Sort by price: low to high</div>
-                            <div class="list_sort_post">Sort by price: high to low</div>
+                            <div class="list_sort_post search list_sort_post_tick" value="0">Defaut Sorting</div>
+                            <div class="list_sort_post search" value="1">Sort by price: low to high</div>
+                            <div class="list_sort_post search" value="2">Sort by price: high to low</div>
                         </div>
                     </div>
                 </div>
                 <div class="b2_list_products">
+                    <?php if (mysqli_num_rows($products) > 0) {
+                        while ($product = mysqli_fetch_array($products)) {
+                    ?>
                     <div class="m_box2_item">
                         <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
+                            <a href="/web_demo/view/detail_product.php?id=<?= $product['id'] ?>">
+                                <img src="../<?= $product['img'] ?>">
+                            </a>
                             <div class="m_b2_it_type">HOT</div>
                             <div class="m_b2_it_car">
                                 <img src="../public/images/cart_item.png">
                             </div>
                         </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
+                        <a href="/web_demo/view/detail_product.php?id=<?= $product['id'] ?>">
+                            <div class="m_b2_it_title"><?= $product['name'] ?></div>
+                        </a>
+                        <div class="m_b2_it_price"><?= $product['price'] ?> $</div>
                     </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
-                    <div class="m_box2_item">
-                        <div class="m_b2_it_img">
-                            <img src="../public/images/img_sp.png">
-                            <div class="m_b2_it_type">HOT</div>
-                            <div class="m_b2_it_car">
-                                <img src="../public/images/cart_item.png">
-                            </div>
-                        </div>
-                        <div class="m_b2_it_title">FLORAL FRILL T-SHIRT</div>
-                        <div class="m_b2_it_price">$ 375.00</div>
-                    </div>
+                    <?php
+                        }
+                    } ?>
                 </div>
             </div>
         </div>

@@ -84,6 +84,18 @@ if (!isset($_SESSION['name'])) {
                     </div>
                 </div>
             </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#order" aria-expanded="true"
+                    aria-controls="order">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Đơn hàng</span>
+                </a>
+                <div id="order" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="../order/list.php">Danh sách</a>
+                    </div>
+                </div>
+            </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
 

@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,7 +69,8 @@
                     <a href="/web_demo/view/cart.php">
                         <img src="../public/images/cart_img.png" alt="" />
                     </a>
-                    <div class="cart_img_absolute">0</div>
+                    <div class="cart_img_absolute">
+                        <?php echo !empty($_SESSION['carts']) ? count($_SESSION['carts']) : 0; ?></div>
                 </div>
                 <div class="header_cart_content">$ 0.00</div>
             </div>

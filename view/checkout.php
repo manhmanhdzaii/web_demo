@@ -1,7 +1,14 @@
 <?php
 $css = array('checkout');
-$js = array('checkout');
+$js = array('jquery.validate.min', 'checkout');
 include('include/header.php');
+include_once('../Controller/HomeController.php');
+$product = new HomeController();
+if (!empty($_SESSION['carts'])) {
+    $arr = array_keys($_SESSION['carts']);
+    $arr = implode(', ', $arr);
+    $item_cart = $product->getCart($arr);
+}
 ?>
 <div class="main">
     <div class="main_title">
@@ -13,7 +20,7 @@ include('include/header.php');
         <div class="container_box1">
             <img src="../public/images/imgcheckout.png" alt="">
         </div>
-        <div class="container_box2">
+        <form class="container_box2" onsubmit="return false;" id="checkout">
             <div class="box2_left">
                 <div class="box2_left_box1">
                     <div class="box2_title">
@@ -23,27 +30,27 @@ include('include/header.php');
                     <div class="box_input_container">
                         <div class="box_input">
                             <p>Name</p>
-                            <input type="text">
+                            <input type="text" name="name" placeholder="Nhập tên..">
+                            <p class="err"></p>
                         </div>
                         <div class="box_input">
                             <p>Phone Number</p>
-                            <input type="text">
+                            <input type="text" name="phone" placeholder="Nhập số điện thoại...">
+                            <p class="err"></p>
+                        </div>
+                    </div>
+                    <div class="box_input_container">
+                        <div class="box_input">
+                            <p>Email</p>
+                            <input type="text" placeholder="Nhập email.." name="email">
+                            <p class="err"></p>
                         </div>
                     </div>
                     <div class="box_input_container">
                         <div class="box_input">
                             <p>City</p>
-                            <input type="text">
-                        </div>
-                        <div class="box_input">
-                            <p>Zip Code</p>
-                            <input type="text">
-                        </div>
-                    </div>
-                    <div class="box_input_container">
-                        <div class="box_input">
-                            <p>City</p>
-                            <input type="text">
+                            <input type="text" name="city" placeholder="Nhập địa chỉ..">
+                            <p class="err"></p>
                         </div>
                         <div class="box_select">
                             <p>Zip Code</p>
@@ -66,7 +73,8 @@ include('include/header.php');
                     <div class="box_input_container">
                         <div class="box_input">
                             <p>Note</p>
-                            <textarea placeholder="Type something here..."></textarea>
+                            <textarea placeholder="Type something here..." name="note"></textarea>
+                            <p class="err"></p>
                         </div>
                     </div>
                 </div>
@@ -93,69 +101,58 @@ include('include/header.php');
                     Products
                 </div>
                 <div class="all_product">
+                    <?php if (!empty($_SESSION['carts'])) {
+                        if (mysqli_num_rows($item_cart) > 0) {
+                            $total = 0;
+                            while ($item = mysqli_fetch_array($item_cart)) {
+                    ?>
                     <div class="detail_product">
-                        <img src="../public/images/img_demo2.png" alt="">
+                        <a href="/web_demo/view/detail_product.php?id=<?= $item['id'] ?>">
+                            <img src="../<?= $item['img'] ?>" alt="">
+                        </a>
                         <div class="product_content">
-                            <div class="product_name">
-                                T-Shirt with crew neck x1
-                            </div>
-
+                            <a href="/web_demo/view/detail_product.php?id=<?= $item['id'] ?>">
+                                <div class="product_name">
+                                    <?= $item['name'] ?> x<?= $_SESSION['carts'][$item['id']] ?>
+                                </div>
+                            </a>
                             <div class="product_price">
-                                $ 312.00
+                                <?php $price_item = $_SESSION['carts'][$item['id']] * $item['price'];
+                                            $total += $price_item;
+                                            ?>
+                                $ <?= $price_item ?>
                             </div>
 
                         </div>
                     </div>
-                    <div class="detail_product">
-                        <img src="../public/images/img_demo2.png" alt="">
-                        <div class="product_content">
-                            <div class="product_name">
-                                T-Shirt with crew neck x1
-                            </div>
-
-                            <div class="product_price">
-                                $ 312.00
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="detail_product">
-                        <img src="../public/images/img_demo2.png" alt="">
-                        <div class="product_content">
-                            <div class="product_name">
-                                T-Shirt with crew neck x1
-                            </div>
-
-                            <div class="product_price">
-                                $ 312.00
-                            </div>
-
-                        </div>
-                    </div>
+                    <?php }
+                        }
+                    }
+                    ?>
                 </div>
-                <div class="box2_right_title">
+                <div class=" box2_right_title">
                     Order summary
                 </div>
                 <div class="price_all">
                     <div class="price">
                         <p>Subtotal</p>
-                        <p class="price_secon">1,349 $</p>
+                        <p class="price_secon"><?= $total ?> $</p>
                     </div>
                     <div class="price">
                         <p>Shipping</p>
-                        <p class="price_ship">25 $</p>
+                        <p class="price_ship">0 $</p>
                     </div>
                 </div>
                 <div class="price_total">
                     <p>TOTAL</p>
-                    <p class="price_after">1,374 $</p>
+                    <p class="price_after"><?= $total ?> $</p>
                 </div>
-                <button class="button_buy">
+                <button class="button_buy" type="submit">
                     CONFIRM ORDER
                 </button>
             </div>
 
-        </div>
+        </form>
     </div>
     <div class="popup__all hidden">
         <div class="main__popup">
@@ -168,7 +165,7 @@ include('include/header.php');
                 Don't forget to keep an eye on your phone and email to receive the latest information from us.
                 Best regards!
             </div>
-            <a href="index.html">
+            <a href="/web_demo/view">
                 <button class="buttonback">
                     BACK TO HOMEPAGE
                 </button>

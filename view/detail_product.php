@@ -1,54 +1,64 @@
 <?php
 $css = array('detail_product');
 $js = array('detail_product');
+if (isset($_GET['id'])) {
+    include_once('../Controller/HomeController.php');
+    $product = new HomeController();
+    $result = $product->check_id($_GET['id']);
+    if ($result) {
+        $detail = $product->getOne($_GET['id']);
+        $sub_img = $product->get_img($_GET['id']);
+        $product = mysqli_fetch_assoc($detail);
+    } else {
+        header('Location: list_products.php');
+    }
+} else {
+    header('Location: list_products.php');
+}
 include('include/header.php');
 ?>
 <div class="main">
     <div class="main_title">
         <div class="main_link_title">
-            <a href="#">Home</a> / <a href="#">Shop</a> / <a href="#">For Men</a> / <a href="#">T-Shirt with crew
-                neck</a>
+            <a href="#">Home</a> / <a href="#">Shop</a> / <a href="#"><?= $product['name'] ?></a>
         </div>
     </div>
     <div class="main_container">
         <div class="main_img">
             <div class="main_img_demo">
+                <?php if (mysqli_num_rows($sub_img) > 0) {
+                    while ($img = mysqli_fetch_array($sub_img)) {
+                ?>
                 <div class="item_img_demo">
-                    <img src="../public/images/img_demo1.png">
+                    <img src="../<?= $img['path'] ?>">
                 </div>
-                <div class="item_img_demo">
-                    <img src="../public/images/img_demo2.png">
-                </div>
-                <div class="item_img_demo">
-                    <img src="../public/images/img_demo3.png">
-                </div>
-                <div class="item_img_demo">
-                    <img src="../public/images/img_demo4.png">
-                </div>
+                <?php }
+                } ?>
             </div>
             <div class="main_img_show">
-                <img src="../public/images/img_show.png">
+                <img src="../<?= $product['img'] ?>">
             </div>
         </div>
         <div class="main_content">
             <div class="content_title">
-                <p>T-SHIRT WITH CREW NECK</p>
+                <p><?= $product['name'] ?></p>
                 <p class="title_type">HOT</p>
             </div>
             <div class="content_price">
-                $ 312.00
+                $ <?= $product['price'] ?>
             </div>
             <div class="content_text">
                 Get this: you can look good while being environmentally conscious. The women's premium organic
                 t-shirt is made up of 100% organic cotton, making it crew and comfy. Plus, the shirt promises the
                 best-possible print results, making it an excellent choice for those looking to customize.
             </div>
-            <div class="content_add_cart">
+            <form class="content_add_cart" method="post" action="/web_demo/Ajax/add_cart.php">
                 <div class="add_cart_subtraction">-</div>
-                <input type="text" class="add_cart_value" value="1">
+                <input type="number" class="add_cart_value" value="1" name="add_cart_value">
                 <div class="add_cart_summation">+</div>
-                <div class="add_cart_to">ADD TO CART</div>
-            </div>
+                <button type="submit" class="add_cart_to">ADD TO CART</button>
+                <input type="hidden" value="<?= $product['id'] ?>" name="product_id">
+            </form>
             <div class="content_des">
                 <div class="content_des_title">
                     <p>Description</p><img src="../public/images/detai_it_title.png" alt="">
@@ -101,6 +111,7 @@ include('include/header.php');
 
         </div>
     </div>
+
 
 </div>
 <?php
