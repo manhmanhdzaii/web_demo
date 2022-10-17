@@ -14,4 +14,10 @@ class Cart extends Database
         $result = mysqli_query(parent::$conn, $sql);
         return $result;
     }
+    public function delete($id)
+    {
+        $sql = "DELETE FROM orders WHERE id = '$id'";
+        $result = mysqli_query(parent::$conn, $sql);
+        return $result;
+    }
 }

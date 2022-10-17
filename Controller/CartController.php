@@ -19,4 +19,10 @@ class CartController
             return false;
         }
     }
+    public function delete($id)
+    {
+        $order = new Cart();
+        $result = $order->delete($id);
+        return $result;
+    }
 }

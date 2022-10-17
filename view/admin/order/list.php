@@ -19,8 +19,12 @@ $orders = $cart->getAll();
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Danh sách đơn hàng</h1>
 </div>
-
-<p><a href="/web_demo/view/admin/product/add.php" class="btn btn-primary">Thêm mới</a></p>
+<?php if (isset($_COOKIE['success'])) { ?>
+<div class="alert alert-success">
+    <?= $_COOKIE['success'] ?>
+</div>
+<?php } ?>
+<!-- <p><a href="/web_demo/view/admin/product/add.php" class="btn btn-primary">Thêm mới</a></p> -->
 <table class="table table-bordered">
     <thead>
         <tr>
